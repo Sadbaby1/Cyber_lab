@@ -1,8 +1,17 @@
 '''
 Question 1:
 
+Assymetric scheme(RSA) is slower than symetric alternative (AES) because RSA algorithm is base on 
+the matematical problem  of factoring large  prime numbers.  It uses complex mathematical calculation 
+to generate  large keys (often 2048 bits or 4096 bits) . These computation make it slower but very secure.
 
+AES in the other hand oparate a much smuller key size works with fixed block sizes (often 128, 192, or 256 bits).
+It required less computing power this make it slower 
 
+An attacker can access information such ass
+public key, the incripted message and the encryption algorithm
+but however without the private key this information are useless
+it is nearly impossible to generate the private key base on the publik key 
 
 '''
 # Task 1
@@ -10,18 +19,18 @@ Question 1:
 def prime(n):
     is_prime = True
     for i in range (2, n):
-        #print(f' i är {i}')
         if n % i == 0:
             is_prime = False
-            #print(f' är {i}')
             break
 
     if  is_prime:
         print(f'{n} is prime')
-        #return n 
+        return n
     else:
         print(f'{n} is not prime')
-              
+        return None
+
+        
 '''
     Answer to Question 2:
     I will depend on the number it self . 
@@ -38,7 +47,7 @@ def find_gcd(c, d):
         c, d = d, c % d 
     return c
     
-def is_relatvly_prime(n1, n2):
+def is_relatively_prime(n1, n2):
     gcd = find_gcd(n1, n2)
     if gcd == 1:
         return gcd
@@ -48,79 +57,92 @@ def is_relatvly_prime(n1, n2):
 
 # Task 2
 def EEA(a, b):
-    relatvly_prime_state = is_relatvly_prime(a, b)
-    print("a")
+    relatvly_prime_state = is_relatively_prime(a, b)
     if relatvly_prime_state:
-        print("b")
-        invers_of_a_mod_b = 1/(a % b)
-        print(f'The inverse of a(mod b) is {invers_of_a_mod_b}')
+        x0 = b
+        x1, x2 = 1, 0
+        y1, y2 = 0, 1
+
+        while b!= 0:
+            r, a, b = a//b, b, a % b
+            x1, x2 = x2, x1 - r * x2
+            y1, y2 = y2, y1 - r * y2
+        return x1 % x0
+    else:
+        return None 
+        
+def invers_of_a_mod_b(e, f):
+    inverse= EEA(e,f)
+
+    if inverse is not None:
+        print(f'The inverse of {e}(mod {f}) is {inverse}')
+    else:
+        print(f'There is no inverse for {e}(mod {f})')
 
 
+# Task 3:
+def Eulerphi(N):
+    result = 0
+    for i in range(1, N):
+        if find_gcd(1, N)==1:
+            result += 1
+    return result
+
+# task 4:
+def invers_of_a_mod_b(e, modulus):
+    inverse= EEA(e,modulus)
+    if inverse is not None:
+        return inverse
+
+
+'''
+Answer to Question 3:
+pk = (e, N) = (19,77)
+m = 15
+e = 19
+N = 77
+c = (m^e) mod N
+c = (15^19) mod 77
+
+15^19 mod 77 = (15^1 * 15^2 * 15^16) mod 77
+
+15^1 mod 77 = 15
+15^2 mod 77 = (15 * 15) mod 77 = 225 mod 77 = 71
+15^4 mod 77 = (71 * 71) mod 77 = 5041 mod 77 = 36
+15^8 mod 77 = (36 * 36) mod 77 = 1296 mod 77 = 64
+15^16 mod 77 = 64 * 64 mod 77 = 4096 mod 77 = 15
+
+c = (15^1 * 15^2 * 15^16) mod 77 
+    =((15^1 mod 77) * (15^2 mod 77) * (15^1 mod 77)) mod77
+    =(15 * 71 * 15) mod 77 = 15975 mod 77 
+    = 36
+
+c = 36
+
+'''
 
 if __name__ == "__main__":
     print('prime numbers')
-    prime(2)
-    prime(3)
-    prime(5)
-    prime(11)
-    prime(13)
-    prime(17)
-    prime(19)
-    prime(23)
-    prime(29)
-    prime(31)
-    prime(37)
-    prime(41)
-    prime(47)
-    prime(53)
-    prime(59)
-    prime(61)
-    prime(67)
-    prime(71)
-    prime(73)
-    prime(79)
-    prime(83)
-    prime(89)
-    prime(97)
+    prime_test= [2, 3, 5, 11, 13, 17, 19, 23, 29, 31, 37, 41, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
+    for p in prime_test:
+        print(f"{p} is prime: {prime(p)}")
     print('icke prime')
-    prime(4)
-    prime(6)
-    prime(8)
-    prime(10)
-    prime(12)
-    prime(14)
-    prime(100)
-    prime(300)
-    for k in range(1,10):
-        print(k)
-        
-
-    print("Extra")
-    for k in range(1,10):
-        if 10 % k == 0:
-            print(k)
-
-    print()      
-    print("Extra med beak statment")
-    for k in range(1,10):
-        if 10 % k == 0:
-            print(k)
-            break
-
     
-    print()
-    print("int !=0 ")
-    for k in range(1,10):
-        
-        if 10 % k != 0:
-            print(k)
+    test_icke_prime= [4, 6, 8, 10, 12, 14, 20,30,40,50,60,70,80]
+    for p in test_icke_prime:
+        print(f"{p} is not prime: {prime(p)}")
+   
 
 print()
 print(30%12)
-print(is_relatvly_prime(20, 3))
-print(is_relatvly_prime(20, 3))  # True (since GCD is 1)
-print(is_relatvly_prime(20, 5))  # False (since GCD is 5)
-print(is_relatvly_prime(35, 64)) # True (since GCD is 1)
+print(is_relatively_prime(20, 3))
+print(is_relatively_prime(20, 3))  # True (since GCD is 1)
+print(is_relatively_prime(20, 5))  # False (since GCD is 5)
+print(is_relatively_prime(35, 64)) # True (since GCD is 1)
 print( " EEA")
-EEA(20, 30 )
+invers_of_a_mod_b(2, 11 )
+print(prime(2))
+print(invers_of_a_mod_b(3, 11))
+
+
  
